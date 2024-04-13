@@ -10,8 +10,12 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
+            <!-- service 구성 파일 -->
             /WEB-INF/spring/appServlet/service-context.xml
+            <!-- dao 구성 파일 -->
             /WEB-INF/spring/appServlet/dao-context.xml
+            <!-- security 구성 파일 -->
+            /WEB-INF/spring/appServlet/security-context.xml
         </param-value>
     </context-param>
 
@@ -60,6 +64,19 @@
 
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- ch05 : Spring Security -->
+    <!-- enabling security -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <!-- 모든 request 가로챈다: /*-->
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- ch05 : Spring Security -->
+    <!-- 여기는 사용자 등록 부분: 권한-->
+    <security:authentication-manager>
+        <!-- 원래는 DB에 저장해야 하는것이지만, 여기서는 메모리에 저장 : memoryAuth-->
+<!--        <security:authentication-provider>-->
+<!--            <security:user-service>-->
+<!--                <security:user name="jksohn" authorities="ROLE_USER" password="{noop}letmein" />-->
+<!--                <security:user name="alice" authorities="ROLE_USER" password="{noop}letmein" />-->
+<!--            </security:user-service>-->
+<!--        </security:authentication-provider>-->
+
+        <!-- dbAuth : 여기에 query를 spring이 알아서 가져와, 일치 여부를 자동으로 확인한다.
+        즉 로그인 프로세스 절차를 알아서 해줌.-->
+        <security:authentication-provider>
+            <!-- data-source-ref는 dao-context.xml의 bean id값이랑 동일해야함-->
+            <security:jdbc-user-service data-source-ref="dataSource"
+                                        users-by-username-query="select username, password, enabled from users where username=?"
+                                        authorities-by-username-query="select username, authority from authorities where username=?" />
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <!-- 여기는 인증 부분: 접근 제어 -->
+    <security:http auto-config="true" use-expressions="true">
+        <!-- 루트 페이지로 가는건 모두 허용하겠따라는 의미.-->
+        <security:intercept-url pattern="/" access="permitAll()" />
+        <!-- 32라인이 없으면 login 페이지는 계속적으로 디나이를 당하기에 리다이렉트 횟수가 너무 많다는 오류 발생. -->
+        <security:intercept-url pattern="/login" access="permitAll()" />
+        <!-- offers 페이지로 가는건 모두 허용하겠따라는 의미.-->
+        <security:intercept-url pattern="/offers" access="permitAll()" />
+        <!-- createoffer 페이지로 가는건 인증 받은 사람만이 접속 가능 의미.-->
+<!--        <security:intercept-url pattern="/createoffer" access="isAuthenticated()" />-->
+        <!-- 만약 users의 속성인 ROLE_USER만 접속이 가능하게끔 하고 싶다면?-->
+        <security:intercept-url pattern="/createoffer" access="hasRole('ROLE_USER')" />
+        <security:intercept-url pattern="/docreate" access="hasRole('ROLE_USER')" />
+        <!-- resources는 모두 허용 의미.-->
+        <security:intercept-url pattern="/resources/**" access="permitAll()" />
+        <!-- 나머지는 모두 디나이 의미.-->
+        <security:intercept-url pattern="/**" access="denyAll()" />
+
+        <!-- Custom Login Form : login view가 없으면 spring 제공 UI 나옴.-->
+        <security:form-login login-page="/login" />
+        <!-- logout : 디폴트 /logout,POST, 성공: /login?logout-->
+        <security:logout />
+    </security:http>
+</beans>
