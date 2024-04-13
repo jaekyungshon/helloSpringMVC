@@ -11,6 +11,9 @@
     <title>$Title$</title>
   </head>
   <body>
-  Hello World
+    <p>
+      <a href="/helloSpringMVC/offers">아래 url과 동일</a>
+      <a href="${pageContext.request.contextPath}/offers"> Show current offers </a>
+    </p>
   </body>
 </html>
