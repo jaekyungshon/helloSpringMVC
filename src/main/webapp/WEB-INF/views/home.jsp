@@ -13,7 +13,10 @@
   <body>
     <p>
       <a href="/helloSpringMVC/offers">아래 url과 동일</a>
+      <br/>
       <a href="${pageContext.request.contextPath}/offers"> Show current offers </a>
+      <br/>
+      <a href="${pageContext.request.contextPath}/createoffer"> Add a new offer </a>
     </p>
   </body>
 </html>
