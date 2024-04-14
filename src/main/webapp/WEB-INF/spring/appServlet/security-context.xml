@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
 
     <!-- ch05 : Spring Security -->
-    <!-- 여기는 사용자 등록 부분: 권한-->
+    <!-- 여기는 사용자 등록 부분: 권한 (실습, homework:학사정보시스템)-->
     <security:authentication-manager>
         <!-- 원래는 DB에 저장해야 하는것이지만, 여기서는 메모리에 저장 : memoryAuth-->
 <!--        <security:authentication-provider>-->
@@ -26,24 +26,70 @@
     </security:authentication-manager>
 
     <!-- 여기는 인증 부분: 접근 제어 -->
+    <!-- 실습 -->
+<!--    <security:http auto-config="true" use-expressions="true">-->
+<!--        &lt;!&ndash; 루트 페이지로 가는건 모두 허용하겠따라는 의미.&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/" access="permitAll()" />-->
+<!--        &lt;!&ndash; 32라인이 없으면 login 페이지는 계속적으로 디나이를 당하기에 리다이렉트 횟수가 너무 많다는 오류 발생. &ndash;&gt;-->
+<!--        <security:intercept-url pattern="/login" access="permitAll()" />-->
+<!--        &lt;!&ndash; offers 페이지로 가는건 모두 허용하겠따라는 의미.&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/offers" access="permitAll()" />-->
+<!--        &lt;!&ndash; createoffer 페이지로 가는건 인증 받은 사람만이 접속 가능 의미.&ndash;&gt;-->
+<!--&lt;!&ndash;        <security:intercept-url pattern="/createoffer" access="isAuthenticated()" />&ndash;&gt;-->
+<!--        &lt;!&ndash; 만약 users의 속성인 ROLE_USER만 접속이 가능하게끔 하고 싶다면?&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/createoffer" access="hasRole('ROLE_USER')" />-->
+<!--        <security:intercept-url pattern="/docreate" access="hasRole('ROLE_USER')" />-->
+<!--        &lt;!&ndash; resources는 모두 허용 의미.&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/resources/**" access="permitAll()" />-->
+<!--        &lt;!&ndash; 나머지는 모두 디나이 의미.&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/**" access="denyAll()" />-->
+
+<!--        &lt;!&ndash; Custom Login Form : login view가 없으면 spring 제공 UI 나옴.&ndash;&gt;-->
+<!--        <security:form-login login-page="/login" />-->
+<!--        &lt;!&ndash; logout : 디폴트 /logout,POST, 성공: /login?logout&ndash;&gt;-->
+<!--        <security:logout />-->
+<!--    </security:http>-->
+
+    <!-- 여기는 인증 부분: 접근 제어 -->
+    <!-- homework : 학사 정보 시스템 -->
     <security:http auto-config="true" use-expressions="true">
-        <!-- 루트 페이지로 가는건 모두 허용하겠따라는 의미.-->
+        <!-- 루트 페이지 모든 사용자 허용 -->
         <security:intercept-url pattern="/" access="permitAll()" />
-        <!-- 32라인이 없으면 login 페이지는 계속적으로 디나이를 당하기에 리다이렉트 횟수가 너무 많다는 오류 발생. -->
+        <!-- 아래 라인 없으면 login 페이지 리다이렉트 횟수 초과 오류 발생. -->
         <security:intercept-url pattern="/login" access="permitAll()" />
-        <!-- offers 페이지로 가는건 모두 허용하겠따라는 의미.-->
-        <security:intercept-url pattern="/offers" access="permitAll()" />
-        <!-- createoffer 페이지로 가는건 인증 받은 사람만이 접속 가능 의미.-->
-<!--        <security:intercept-url pattern="/createoffer" access="isAuthenticated()" />-->
-        <!-- 만약 users의 속성인 ROLE_USER만 접속이 가능하게끔 하고 싶다면?-->
-        <security:intercept-url pattern="/createoffer" access="hasRole('ROLE_USER')" />
-        <security:intercept-url pattern="/docreate" access="hasRole('ROLE_USER')" />
-        <!-- resources는 모두 허용 의미.-->
+        <!-- 모든 페이지 접근 가능하게 설정 방법 -->
+        <!-- menuone 페이지는 인증받은 사용자들만 허용 : 페이지-->
+<!--        <security:intercept-url pattern="/menuone" access="permitAll()" />-->
+<!--        &lt;!&ndash; menuonedetails 페이지는 인증받은 사용자들만 허용 : 페이지&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/menuonedetails" access="permitAll()" />-->
+<!--        &lt;!&ndash; menutwo 페이지는 인증받은 사용자들만 허용 : 페이지&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/menutwo" access="permitAll()" />-->
+<!--        &lt;!&ndash; menutwocreated 페이지는 인증받은 사용자들만 허용 : 컨트롤러&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/domenutwo" access="permitAll()" />-->
+<!--        &lt;!&ndash; menuthree 페이지는 인증받은 사용자들만 허용 : 페이지&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/menuthree" access="permitAll()" />-->
+<!--        &lt;!&ndash; resources 모두 허용 &ndash;&gt;-->
+<!--        <security:intercept-url pattern="/resources/**" access="permitAll()" />-->
+<!--        &lt;!&ndash; 나머지는 모두 디나이 의미.&ndash;&gt;-->
+<!--        <security:intercept-url pattern="/**" access="denyAll()" />-->
+
+        <!-- 학사 정보 접근 메뉴 인증자들만 가능하게끔 허용 -->
+        <!-- menuone 페이지 인증자만 접근 가능 -->
+        <security:intercept-url pattern="/menuone" access="isAuthenticated()" />
+        <!-- 기존에 설정된 URL 패턴에 더해 '/menuonedetails'에 대한 접근 규칙 추가 -->
+        <security:intercept-url pattern="/menuonedetails" access="isAuthenticated()" />
+        <!-- menutwo 페이지는 인증받은 사용자들만 허용 : 페이지-->
+        <security:intercept-url pattern="/menutwo" access="isAuthenticated()" />
+        <!-- domenutwo 서버 요청 처리는 인증받은 사용자들만 허용 : 컨트롤러-->
+        <security:intercept-url pattern="/domenutwo" access="isAuthenticated()" />
+        <!-- menuthree 페이지는 인증받은 사용자들만 허용 : 페이지-->
+        <security:intercept-url pattern="/menuthree" access="isAuthenticated()" />
+        <!-- resources 모두 허용 -->
         <security:intercept-url pattern="/resources/**" access="permitAll()" />
         <!-- 나머지는 모두 디나이 의미.-->
         <security:intercept-url pattern="/**" access="denyAll()" />
 
-        <!-- Custom Login Form : login view가 없으면 spring 제공 UI 나옴.-->
+        <!-- 커스텀 로그인 폼 : login view가 없으면 spring 제공 UI 나옴.-->
         <security:form-login login-page="/login" />
         <!-- logout : 디폴트 /logout,POST, 성공: /login?logout-->
         <security:logout />

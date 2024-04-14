@@ -21,6 +21,6 @@
         <beans:property name="suffix" value=".jsp" />
     </beans:bean>
 
+    <!-- 실습 및 homework(학사정보시스템) 컨트롤러 base package -->
     <context:component-scan base-package="kr.ac.hansung.cse.controller" />
-
 </beans:beans>
